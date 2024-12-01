@@ -21,3 +21,11 @@ while (<$fh>) {
 my $d = sum(map {abs($l[$_] - $r[$_])} 0 .. @l-1);
 
 print "Total distance: $d\n";
+
+my $sc = 0;
+foreach my $l(@l) {
+    $sc += $l * grep(/$l/, @r);
+}
+
+print "Similarity score: $sc\n";
+#24931009
