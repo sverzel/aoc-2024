@@ -28,4 +28,3 @@ foreach my $l(@l) {
 }
 
 print "Similarity score: $sc\n";
-#24931009
