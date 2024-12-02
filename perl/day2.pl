@@ -1,7 +1,6 @@
 #!/usr/bin/perl -w
 
 use strict;
-use List::Util qw(sum);
 
 my ($input) = $0 =~ /^([^.]+)/;
 $input .= '_input';
