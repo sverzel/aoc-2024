@@ -3,13 +3,8 @@ advent_of_code::solution!(2);
 pub fn part_one(input: &str) -> Option<u32> {
     let mut safe: u32 = 0;
 
-    for line in input.split("\n") {
-        let values: Vec<i32> = line
-            .split_whitespace()
-            .map(|v| v.parse::<i32>().unwrap())
-            .collect();
-
-        if is_safe(&values) {
+    for v in prep(&input) {
+        if is_safe(&v) {
             safe += 1;
         }
     }
@@ -20,12 +15,7 @@ pub fn part_one(input: &str) -> Option<u32> {
 pub fn part_two(input: &str) -> Option<u32> {
     let mut safe: u32 = 0;
 
-    for line in input.split("\n") {
-        let v: Vec<i32> = line
-            .split_whitespace()
-            .map(|v| v.parse::<i32>().unwrap())
-            .collect();
-
+    for v in prep(&input) {
         for i in 0..v.len() {
             let mut values = v.clone();
             values.remove(i);
@@ -38,6 +28,17 @@ pub fn part_two(input: &str) -> Option<u32> {
     }
 
     Some(safe)
+}
+
+fn prep(input: &str) -> Vec<Vec<i32>> {
+    input
+        .split("\n")
+        .map(|line| {
+            line.split_whitespace()
+                .map(|v| v.parse::<i32>().unwrap())
+                .collect()
+        })
+        .collect()
 }
 
 fn is_safe(v: &Vec<i32>) -> bool {
