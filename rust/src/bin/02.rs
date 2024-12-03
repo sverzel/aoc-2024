@@ -8,22 +8,9 @@ pub fn part_one(input: &str) -> Option<u32> {
             .split_whitespace()
             .map(|v| v.parse::<i32>().unwrap())
             .collect();
-        let mut a = values.clone();
-        a.sort_by(|a, b| a.cmp(b));
-        let mut d = values.clone();
-        d.sort_by(|a, b| b.cmp(a));
 
-        if values.len() > 0 {
-            if (0..values.len() - 1)
-                .into_iter()
-                .map(|i| (values[i] - values[i + 1]).abs())
-                .filter(|&i| i > 0 && i < 4)
-                .count()
-                == values.len() - 1
-                && (values.eq(&a) || values.eq(&d))
-            {
-                safe += 1;
-            }
+        if is_safe(&values) {
+            safe += 1;
         }
     }
 
@@ -42,28 +29,37 @@ pub fn part_two(input: &str) -> Option<u32> {
         for i in 0..v.len() {
             let mut values = v.clone();
             values.remove(i);
-            let mut a = values.clone();
-            a.sort_by(|a, b| a.cmp(b));
-            let mut d = values.clone();
-            d.sort_by(|a, b| b.cmp(a));
 
-            if values.len() > 0 {
-                if (0..values.len() - 1)
-                    .into_iter()
-                    .map(|i| (values[i] - values[i + 1]).abs())
-                    .filter(|&i| i > 0 && i < 4)
-                    .count()
-                    == values.len() - 1
-                    && (values.eq(&a) || values.eq(&d))
-                {
-                    safe += 1;
-                    break;
-                }
+            if is_safe(&values) {
+                safe += 1;
+                break;
             }
         }
     }
 
     Some(safe)
+}
+
+fn is_safe(v: &Vec<i32>) -> bool {
+    let mut a = v.clone();
+    a.sort_by(|a, b| a.cmp(b));
+    let mut d = v.clone();
+    d.sort_by(|a, b| b.cmp(a));
+
+    if v.len() > 0 {
+        if (0..v.len() - 1)
+            .into_iter()
+            .map(|i| (v[i] - v[i + 1]).abs())
+            .filter(|&i| i > 0 && i < 4)
+            .count()
+            == v.len() - 1
+            && (v.eq(&a) || v.eq(&d))
+        {
+            return true;
+        }
+    }
+
+    false
 }
 
 #[cfg(test)]
