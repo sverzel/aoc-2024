@@ -1,7 +1,6 @@
 #!/usr/bin/perl -w
 
 use strict;
-use Time::HiRes;
 
 my ($input) = $0 =~ /^([^.]+)/;
 $input .= '_input';
