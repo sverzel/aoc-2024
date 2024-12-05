@@ -1,34 +1,32 @@
 #!/usr/bin/perl -w
 
 use strict;
-use Array::Utils qw(:all);
 
 my ($input) = $0 =~ /^([^.]+)/;
 $input .= '_input';
 
 open my $fh, $input or die $!;
 
-my @rules;
+my %rules;
 my $sum = 0;
+my $sum_corrected = 0;
 while (<$fh>) {
     if (/\|/) {
-        push @rules, [map {chomp; $_} split '\|'];
+        my ($l, $r) = /(\d+)\|(\d+)/;
+        $rules{$l}{$r} = 1;
     }
     elsif (/,/) {
         my @list = map {chomp; $_} split ',';
-        my $overlap = 0;
-        for (my $i=0; $i < @list; $i++) {
-            my @r = map $_->[0], grep {$_->[1] eq $list[$i]} @rules;
-            my @p = @list[$i+1..$#list];
-            $overlap += intersect(@r, @p);
+        my @sorted_list = sort { defined($rules{$a}{$b}) ? -1 : 1 } @list;
 
-            if (intersect(@r, @p)) {
-                print "Row $. .. $list[$i] intersection: (", join(', ', intersect(@r, @p)), ")\n";
-            }
+        if ((grep { $list[$_] == $sorted_list[$_] } 0 .. $#list) == @list) {
+            $sum += $list[$#list / 2];
         }
-
-        $sum += $list[$#list / 2] if $overlap == 0;
+        else {
+            $sum_corrected += $sorted_list[$#sorted_list / 2];
+        }
     }
 }
 
 print "Sum: $sum\n";
+print "Sum corrected: $sum_corrected\n";
