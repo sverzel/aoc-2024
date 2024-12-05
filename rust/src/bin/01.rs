@@ -1,18 +1,7 @@
 advent_of_code::solution!(1);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let mut left = vec![];
-    let mut right = vec![];
-    for line in input.split("\n") {
-        let value: Vec<&str> = line.split_whitespace().collect();
-        if value.len() > 0 {
-            left.push(value[0].parse::<i32>().unwrap());
-            right.push(value[1].parse::<i32>().unwrap());
-        }
-    }
-
-    left.sort();
-    right.sort();
+    let (left, right) = prep(&input);
 
     let mut sum: u32 = 0;
     for i in 0..left.len() {
@@ -23,6 +12,17 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
+    let (left, right) = prep(&input);
+
+    let mut sum: u32 = 0;
+    for l in left {
+        sum += (l * (&right).into_iter().filter(|&v| *v == l).count() as i32) as u32;
+    }
+
+    Some(sum)
+}
+
+fn prep(input: &str) -> (Vec<i32>, Vec<i32>) {
     let mut left = vec![];
     let mut right = vec![];
     for line in input.split("\n") {
@@ -36,12 +36,7 @@ pub fn part_two(input: &str) -> Option<u32> {
     left.sort();
     right.sort();
 
-    let mut sum: u32 = 0;
-    for l in left {
-        sum += (l * (&right).into_iter().filter(|&v| *v == l).count() as i32) as u32;
-    }
-
-    Some(sum)
+    (left, right)
 }
 
 #[cfg(test)]
