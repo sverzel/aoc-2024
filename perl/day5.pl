@@ -16,8 +16,8 @@ while (<$fh>) {
         $rules{$l}{$r} = 1;
     }
     elsif (/,/) {
-        my @list = map {chomp; $_} split ',';
-        my @sorted_list = sort { defined($rules{$a}{$b}) ? -1 : 1 } @list;
+        my @list = /(\d+)/g;
+        my @sorted_list = sort { $rules{$a}{$b} ? -1 : 1 } @list;
 
         if ((grep { $list[$_] == $sorted_list[$_] } 0 .. $#list) == @list) {
             $sum += $list[$#list / 2];
