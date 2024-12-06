@@ -9,47 +9,26 @@ open my $fh, $input or die $!;
 my $data = [map {chomp; [split //, $_]} <$fh>];
 
 
-my ($x, $y, $d) = (0, 0, '');
+my ($x, $y, $d) = (0, 0, 0);
 OUTER: for ($y=0; $y < @$data; $y++) {
     for ($x=0; $x < @{$data->[$y]}; $x++) {
-        last OUTER if ($d) = $data->[$y][$x] =~ /([<>^v])/;
+        last OUTER if $data->[$y][$x] eq '^';
     }
 }
 
-while ($d eq '' || ($x > -1 && $x < @{$data->[0]} && $y > -1 && $y < @$data)) {
+while ($x > -1 && $x < @{$data->[0]} && $y > -1 && $y < @$data) {
     $data->[$y][$x] = 'X';
 
-    if ($d eq '^') {
-        if ($data->[$y-1][$x] ne '#') {
-            $y--;
-        }
-        else {
-            $d = '>';
-        }
+    my $next =  $d == 0 ? [0,-1] :
+                $d == 1 ? [1, 0] :
+                $d == 2 ? [0, 1] :
+                $d == 3 ? [-1,0] : [];
+
+    if ($data->[$y + $next->[1]][$x + $next->[0]] ne '#') {
+        ($x, $y) = ($x + $next->[0], $y + $next->[1]);
     }
-    elsif ($d eq '>') {
-        if ($data->[$y][$x+1] ne '#') {
-            $x++;
-        }
-        else {
-            $d = 'v';
-        }
-    }
-    elsif ($d eq 'v') {
-        if ($data->[$y+1][$x] ne '#') {
-            $y++;
-        }
-        else {
-            $d = '<';
-        }
-    }
-    elsif ($d eq '<') {
-        if ($data->[$y][$x-1] ne '#') {
-            $x--;
-        }
-        else {
-            $d = '^';
-        }
+    else {
+        $d = ($d + 1) % 4;
     }
 }
 
