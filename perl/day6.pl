@@ -39,22 +39,25 @@ sub test {
         }
     }
 
-    return scalar map {keys %{$visited{$_}}} keys %visited;
+    my @l;
+    foreach my $x(keys %visited) {
+        foreach my $y( keys %{$visited{$x}}) {
+            push @l, [$x, $y];
+        }
+    }
+
+    return @l;
 }
 
-my $visited_spots = test($data);
+my @visited_spots = test($data);
 
-print "Number of visited spots: $visited_spots\n";
+print "Number of visited spots: " . @visited_spots . "\n";
 
 my $c = 0;
-for (my $y=0; $y < @$data; $y++) {
-    for (my $x=0; $x < @{$data->[$y]}; $x++) {
-        next if $data->[$y][$x] =~ /[#^]/;
-
+for (@visited_spots) {
         my $copy = [map { [@$_]} @$data];
-        $copy->[$y][$x] = '#';
+        $copy->[$_->[1]][$_->[0]] = '#';
         $c++ unless defined test($copy);
-    }
 }
 
 print "Number of looped configurations: $c\n";
